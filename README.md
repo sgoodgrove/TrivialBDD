@@ -2,7 +2,9 @@
 
 A poor-man's BDD framework sans Gherkhin.
 
-I'm not sure if I want to do anything with this yet, but it's a simple idea to help break up method calls in test cases to aid readability. Obviously method calls will need to be written to return `this`.
+I'm not sure if I want to do anything with this yet, but it's a simple idea to help break up method calls in test cases to aid readability. Perhaps this could give you ideas to help clean up your own code if nothing else.
+
+Method calls will need to be written to return `this`.
 
 e.g.
 
