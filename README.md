@@ -38,3 +38,5 @@ e.g.
         }
     }
 ```
+
+Also, I quite like the look of https://github.com/robfe/SpecLight
