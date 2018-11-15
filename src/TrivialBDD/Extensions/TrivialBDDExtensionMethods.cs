@@ -1,6 +1,8 @@
-﻿namespace TrivialBDD
+﻿using System;
+using System.Diagnostics;
+namespace TrivialBDD.Extensions
 {
-    public static class BDD
+    public static class TrivialBDDExtensionMethods
     {
         public static T Given<T>(this T t) => t;
         public static T When<T>(this T t) => t;
