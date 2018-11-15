@@ -29,8 +29,9 @@ namespace TrivialBDD
 
         public static CallChain Given(Action action, Action<CallInfo> callback = null)
         {
-            var startAndEnd = CallTo(action, callback);
-            return new CallChain(startAndEnd.Item1, startAndEnd.Item2, callback);
+            var sanitisedCallback = callback ?? ((ci) => { });
+            var startAndEnd = CallTo(action, sanitisedCallback);
+            return new CallChain(startAndEnd.Item1, startAndEnd.Item2, sanitisedCallback);
         }
 
         public ICallChain And(Action action) => CallTo(action);
@@ -84,9 +85,9 @@ namespace TrivialBDD
 
         private CallChain CallTo(Action action)
         {
-            var ab = CallChain.CallTo(action, callback);
-            calls.Add(ab.Item1);
-            calls.Add(ab.Item2);
+            var startAndEnd = CallChain.CallTo(action, callback);
+            calls.Add(startAndEnd.Item1);
+            calls.Add(startAndEnd.Item2);
             return this;
         }
     }
