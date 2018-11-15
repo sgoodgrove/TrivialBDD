@@ -29,7 +29,7 @@ namespace TrivialBDD
 
         object IEnumerator.Current => calls[callIndex];
 
-        public TimeSpan? TotalElapsedTime { get => calls.Max(c => c.Start) - calls.Min(c => c.End); }
+        public TimeSpan? TotalElapsedTime { get => calls.Max(c => c.End) - calls.Min(c => c.Start); }
 
         public static CallChain Given(Action action, Action<CallInfo> callback = null)
         {
