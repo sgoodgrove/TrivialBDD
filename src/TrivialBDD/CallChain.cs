@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using TrivialBDD.Interfaces;
 
 namespace TrivialBDD
 {
@@ -14,8 +15,11 @@ namespace TrivialBDD
 
         private int callIndex = 0;
 
-        private CallChain(CallInfo initialCallStart, CallInfo initialCallEnd, Action<CallInfo> callback)
+        private IDateTime dateTime;
+
+        private CallChain(CallInfo initialCallStart, CallInfo initialCallEnd, Action<CallInfo> callback, IDateTime dateTime = null)
         {
+            this.dateTime = dateTime ?? new Interfaces.DateTime();
             this.callback = callback;
             calls.Add(initialCallStart);
             calls.Add(initialCallEnd);
@@ -29,9 +33,8 @@ namespace TrivialBDD
 
         public static CallChain Given(Action action, Action<CallInfo> callback = null)
         {
-            var sanitisedCallback = callback ?? ((ci) => { });
-            var startAndEnd = CallTo(action, sanitisedCallback);
-            return new CallChain(startAndEnd.Item1, startAndEnd.Item2, sanitisedCallback);
+            var dateTime = new Interfaces.DateTime();
+            return Given(action, callback, dateTime);
         }
 
         public ICallChain And(Action action) => CallTo(action);
@@ -70,14 +73,21 @@ namespace TrivialBDD
 
         public ICallChain When(Action action) => CallTo(action);
 
-        private static (CallInfo, CallInfo) CallTo(Action action, Action<CallInfo> callback)
+        internal static CallChain Given(Action action, Action<CallInfo> callback = null, IDateTime dateTime = null)
+        {
+            var sanitisedCallback = callback ?? ((ci) => { });
+            var startAndEnd = CallTo(action, sanitisedCallback, dateTime);
+            return new CallChain(startAndEnd.Item1, startAndEnd.Item2, sanitisedCallback, dateTime);
+        }
+
+        private static (CallInfo, CallInfo) CallTo(Action action, Action<CallInfo> callback, IDateTime dateTime)
         {
             var start = new CallInfo(action);
             callback(start);
             var sw = Stopwatch.StartNew();
             action();
             sw.Stop();
-            var end = new CallInfo(initialInfo: start, end: DateTime.UtcNow, duration: sw.Elapsed);
+            var end = new CallInfo(initialInfo: start, end: dateTime.UtcNow, duration: sw.Elapsed);
             callback(end);
 
             return (start, end);
@@ -85,7 +95,7 @@ namespace TrivialBDD
 
         private CallChain CallTo(Action action)
         {
-            var startAndEnd = CallChain.CallTo(action, callback);
+            var startAndEnd = CallChain.CallTo(action, callback, dateTime);
             calls.Add(startAndEnd.Item1);
             calls.Add(startAndEnd.Item2);
             return this;
