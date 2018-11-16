@@ -13,7 +13,7 @@ namespace TrivialBDD
 
         private Action<CallInfo> callback;
 
-        private int callIndex = 0;
+        private int callIndex = -1;
 
         private IDateTime dateTime;
 
@@ -66,7 +66,7 @@ namespace TrivialBDD
 
         public void Reset()
         {
-            callIndex = 0;
+            callIndex = -1;
         }
 
         public ICallChain Then(Action action) => CallTo(action);
